@@ -4,14 +4,7 @@ export enum Role {
     SUPER_ADMIN = "SUPER_ADMIN",
     ADMIN = "ADMIN",
     USER = "USER",
-    GUIDE = "GUIDE",
 }
-
-//auth providers
-/**
- * email, password 
- * google authentication
- */
 
 export interface IAuthProvider {
     provider: "google" | "credentials";  // "Google", "Credential"
