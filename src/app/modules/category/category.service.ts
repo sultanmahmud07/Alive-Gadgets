@@ -5,10 +5,9 @@ import { ICategory } from "./category.interface";
 import { Category } from "./category.model";
 
 const createCategory = async (payload: ICategory) => {
-
-    const existingCategory = await Category.findOne({ name: payload.name });
+    const existingCategory = await Category.findOne({ name: payload.slug });
     if (existingCategory) {
-        throw new Error("A category with this name already exists.");
+        throw new Error("A category with this slug already exists.");
     }
 
     const category = await Category.create(payload);

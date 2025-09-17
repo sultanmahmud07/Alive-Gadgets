@@ -4,29 +4,31 @@ import { cloudinaryUpload } from "./cloudinary.config";
 
 
 const storage = new CloudinaryStorage({
-    cloudinary: cloudinaryUpload,
-    params: {
-        public_id: (req, file) => {
-            // My Special.Image#!@.png => 4545adsfsadf-45324263452-my-image.png
-            // My Special.Image#!@.png => [My Special, Image#!@, png]
+  cloudinary: cloudinaryUpload,
+  params: {
+    public_id: (req, file) => {
+      const originalName = file.originalname.toLowerCase();
 
-            const fileName = file.originalname
-                .toLowerCase()
-                .replace(/\s+/g, "-") // empty space remove replace with dash
-                .replace(/\./g, "-")
-                // eslint-disable-next-line no-useless-escape
-                .replace(/[^a-z0-9\-\.]/g, "") // non alpha numeric - !@#$
+      // extract name and extension
+      const nameWithoutExt = originalName.substring(0, originalName.lastIndexOf(".")) || originalName;
+     
+      // sanitize name
+      const safeName = nameWithoutExt
+        .replace(/\s+/g, "-") // spaces → dash
+        // eslint-disable-next-line no-useless-escape
+        .replace(/[^a-z0-9\-]/g, ""); // only keep alphanumeric and -
 
-            const extension = file.originalname.split(".").pop()
+      const uniqueFileName =
+        Math.random().toString(36).substring(2) +
+        "-" +
+        Date.now() +
+        "-" +
+        safeName;
 
-            // binary -> 0,1 hexa decimal -> 0-9 A-F base 36 -> 0-9 a-z
-            // 0.2312345121 -> "0.hedfa674338sasfamx" -> 
-            //452384772534
-            const uniqueFileName = Math.random().toString(36).substring(2) + "-" + Date.now() + "-" + fileName + "." + extension
+      return uniqueFileName;
+    },
+  },
+});
 
-            return uniqueFileName
-        }
-    }
-})
 
 export const multerUpload = multer({ storage: storage })
