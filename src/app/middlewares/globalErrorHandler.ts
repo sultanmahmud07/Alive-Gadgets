@@ -12,9 +12,9 @@ import { TErrorSources } from "../interfaces/error.types";
 
 export const globalErrorHandler = async (err: any, req: Request, res: Response, next: NextFunction) => {
     if (envVars.NODE_ENV === "development") {
+        // eslint-disable-next-line no-console
         console.log(err);
     }
-    console.log({ file: req.files });
     if (req.file) {
         await deleteImageFromCLoudinary(req.file.path)
     }
