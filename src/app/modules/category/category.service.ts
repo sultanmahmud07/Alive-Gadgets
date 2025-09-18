@@ -72,11 +72,11 @@ const updateCategory = async (id: string, payload: Partial<ICategory>) => {
 };
 
 const deleteCategory = async (id: string) => {
-      const existingCategory = await Category.findById(id);
+    const existingCategory = await Category.findById(id);
     if (!existingCategory) {
         throw new Error("Category not found.");
     }
-        if (existingCategory.thumbnail) {
+    if (existingCategory.thumbnail) {
         await deleteImageFromCLoudinary(existingCategory.thumbnail)
     }
     await Category.findByIdAndDelete(id);
