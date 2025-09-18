@@ -1,26 +1,21 @@
 import { Types } from "mongoose";
 
-export interface ITourType {
-    name: string;
+export interface IProductVariation {
+  size?: string;   // e.g., L, XL, XXL
+  color?: string;  // e.g., black, green, red
+  stock: number;   // available stock for this variation
+  price: number;   // variation-specific price (optional)
 }
-export interface ITour {
-    title: string;
-    slug: string;
-    description?: string;
-    images?: string[];
-    location?: string;
-    costFrom?: number;
-    startDate?: Date
-    departureLocation?: string;
-    arrivalLocation?: string;
-    endDate?: Date;
-    included?: string[];
-    excluded?: string[]
-    amenities?: string[];
-    tourPlan?: string[];
-    maxGuest?: number;
-    minAge?: number;
-    division: Types.ObjectId
-    tourType: Types.ObjectId
-    deleteImages?: string[]
+
+export interface IProduct {
+  name: string;
+  slug: string;
+  description?: string;
+  images?: string[];
+  basePrice: number; // default/base price
+  variations: IProductVariation[];
+  category?: Types.ObjectId;
+   deleteImages?: string[]
+  createdAt: Date;
+  updatedAt: Date;
 }

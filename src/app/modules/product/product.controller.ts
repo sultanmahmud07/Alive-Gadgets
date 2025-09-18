@@ -2,132 +2,73 @@
 import { Request, Response } from 'express';
 import { catchAsync } from '../../utils/catchAsync';
 import { sendResponse } from '../../utils/sendResponse';
-import { ITour } from './product.interface';
-import { TourService } from './product.service';
+import { IProduct } from './product.interface';
+import { ProductService } from './product.service';
 
-const createTour = catchAsync(async (req: Request, res: Response) => {
-    const payload: ITour = {
+const createProduct = catchAsync(async (req: Request, res: Response) => {
+    const payload: IProduct = {
         ...req.body,
         images: (req.files as Express.Multer.File[]).map(file => file.path)
     }
-    const result = await TourService.createTour(payload);
+    const result = await ProductService.createProduct(payload);
     sendResponse(res, {
         statusCode: 201,
         success: true,
-        message: 'Tour created successfully',
+        message: 'Product created successfully',
         data: result,
     });
 });
 
-const getAllTours = catchAsync(async (req: Request, res: Response) => {
+const getAllProducts = catchAsync(async (req: Request, res: Response) => {
 
     const query = req.query
-    const result = await TourService.getAllTours(query as Record<string, string>);
+    const result = await ProductService.getAllProducts(query as Record<string, string>);
     sendResponse(res, {
         statusCode: 200,
         success: true,
-        message: 'Tours retrieved successfully',
+        message: 'Products retrieved successfully',
         data: result.data,
         meta: result.meta,
     });
 });
 
-const getSingleTour = catchAsync(async (req: Request, res: Response) => {
+const getSingleProduct = catchAsync(async (req: Request, res: Response) => {
     const slug = req.params.slug
-    const result = await TourService.getSingleTour(slug);
+    const result = await ProductService.getSingleProduct(slug);
     sendResponse(res, {
         statusCode: 200,
         success: true,
-        message: 'Tour retrieved successfully',
+        message: 'Product retrieved successfully',
         data: result,
     });
 });
-const updateTour = catchAsync(async (req: Request, res: Response) => {
-    const payload: ITour = {
+const updateProduct = catchAsync(async (req: Request, res: Response) => {
+    const payload: IProduct = {
         ...req.body,
         images: (req.files as Express.Multer.File[]).map(file => file.path)
     }
-    const result = await TourService.updateTour(req.params.id, payload);
+    const result = await ProductService.updateProduct(req.params.id, payload);
     sendResponse(res, {
         statusCode: 200,
         success: true,
-        message: 'Tour updated successfully',
+        message: 'Product updated successfully',
         data: result,
     });
 });
-const deleteTour = catchAsync(async (req: Request, res: Response) => {
+const deleteProduct = catchAsync(async (req: Request, res: Response) => {
     const { id } = req.params;
-    const result = await TourService.deleteTour(id);
+    const result = await ProductService.deleteProduct(id);
     sendResponse(res, {
         statusCode: 200,
         success: true,
-        message: 'Tour deleted successfully',
+        message: 'Product deleted successfully',
         data: result,
     });
 });
-const getSingleTourType = catchAsync(async (req: Request, res: Response) => {
-    const id = req.params.id;
-    const result = await TourService.getSingleTourType(id);
-    sendResponse(res, {
-        statusCode: 200,
-        success: true,
-        message: 'Tour type retrieved successfully',
-        data: result,
-    });
-});
-const getAllTourTypes = catchAsync(async (req: Request, res: Response) => {
-    const query = req.query;
-    const result = await TourService.getAllTourTypes(query as Record<string, string>);
-    sendResponse(res, {
-        statusCode: 200,
-        success: true,
-        message: 'Tour types retrieved successfully',
-        data: result,
-    });
-});
-
-const createTourType = catchAsync(async (req: Request, res: Response) => {
-    const { name } = req.body;
-    const result = await TourService.createTourType(name);
-    sendResponse(res, {
-        statusCode: 201,
-        success: true,
-        message: 'Tour type created successfully',
-        data: result,
-    });
-});
-
-const updateTourType = catchAsync(async (req: Request, res: Response) => {
-    const { id } = req.params;
-    const { name } = req.body;
-    const result = await TourService.updateTourType(id, name);
-    sendResponse(res, {
-        statusCode: 200,
-        success: true,
-        message: 'Tour type updated successfully',
-        data: result,
-    });
-});
-const deleteTourType = catchAsync(async (req: Request, res: Response) => {
-    const { id } = req.params;
-    const result = await TourService.deleteTourType(id);
-    sendResponse(res, {
-        statusCode: 200,
-        success: true,
-        message: 'Tour type deleted successfully',
-        data: result,
-    });
-});
-
-export const TourController = {
-    createTour,
-    createTourType,
-    getAllTourTypes,
-    getSingleTourType,
-    deleteTourType,
-    updateTourType,
-    getAllTours,
-    getSingleTour,
-    updateTour,
-    deleteTour,
+export const ProductController = {
+    createProduct,
+    getAllProducts,
+    getSingleProduct,
+    updateProduct,
+    deleteProduct,
 };

@@ -1,80 +1,25 @@
 import { model, Schema } from "mongoose";
-import { ITour, ITourType } from "./product.interface";
+import { IProduct, IProductVariation } from "./product.interface";
 
-const tourTypeSchema = new Schema<ITourType>({
-    name: { type: String, required: true, unique: true }
-}, {
-    timestamps: true
-})
+const productVariationSchema = new Schema<IProductVariation>({
+  size: { type: String },
+  color: { type: String },
+  stock: { type: Number, required: true, default: 0 },
+  price: { type: Number }, // if not provided, use basePrice
+});
 
-export const TourType = model<ITourType>("TourType", tourTypeSchema)
-
-const tourSchema = new Schema<ITour>({
-    title: { type: String, required: true },
-    slug: { type: String, unique: true },
+const productSchema = new Schema<IProduct>(
+  {
+    name: { type: String, required: true },
+    slug: { type: String, required: true, unique: true },
     description: { type: String },
     images: { type: [String], default: [] },
-    location: { type: String },
-    costFrom: { type: Number },
-    startDate: { type: Date },
-    endDate: { type: Date },
-    departureLocation: { type: String },
-    arrivalLocation: { type: String },
-    included: { type: [String], default: [] },
-    excluded: { type: [String], default: [] },
-    amenities: { type: [String], default: [] },
-    tourPlan: { type: [String], default: [] },
-    maxGuest: { type: Number },
-    minAge: { type: Number },
-    division: {
-        type: Schema.Types.ObjectId,
-        ref: "Division",
-        required: true
-    },
-    tourType: {
-        type: Schema.Types.ObjectId,
-        ref: "TourType",
-        required: true
-    }
-}, {
-    timestamps: true
-})
+    deleteImages: { type: [String], default: [] },
+    basePrice: { type: Number, required: true },
+    variations: [productVariationSchema],
+    category: { type: String },
+  },
+  { timestamps: true }
+);
 
-tourSchema.pre("save", async function (next) {
-
-    if (this.isModified("title")) {
-        const baseSlug = this.title.toLowerCase().split(" ").join("-")
-        let slug = `${baseSlug}`
-
-        let counter = 0;
-        while (await Tour.exists({ slug })) {
-            slug = `${slug}-${counter++}` // dhaka-division-2
-        }
-
-        this.slug = slug;
-    }
-    next()
-})
-
-tourSchema.pre("findOneAndUpdate", async function (next) {
-    const tour = this.getUpdate() as Partial<ITour>
-
-    if (tour.title) {
-        const baseSlug = tour.title.toLowerCase().split(" ").join("-")
-        let slug = `${baseSlug}`
-
-
-        let counter = 0;
-        while (await Tour.exists({ slug })) {
-            slug = `${slug}-${counter++}` // dhaka-division-2
-        }
-
-        tour.slug = slug
-    }
-
-    this.setUpdate(tour)
-
-    next()
-})
-
-export const Tour = model<ITour>("Tour", tourSchema)
+export const Product = model<IProduct>("Product", productSchema);

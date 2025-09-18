@@ -1,45 +1,33 @@
 import { z } from "zod";
 
-
-
-export const createTourZodSchema = z.object({
-    title: z.string(),
-    description: z.string().optional(),
-    location: z.string().optional(),
-    costFrom: z.number().optional(),
-    startDate: z.string().optional().optional(),
-    endDate: z.string().optional().optional(),
-    tourType: z.string(),// <- changed here
-    included: z.array(z.string()).optional(),
-    excluded: z.array(z.string()).optional(),
-    amenities: z.array(z.string()).optional(),
-    tourPlan: z.array(z.string()).optional(),
-    maxGuest: z.number().optional(),
-    minAge: z.number().optional(),
-    division: z.string(),
-    departureLocation: z.string().optional(),
-    arrivalLocation: z.string().optional()
+// Variation schema
+const productVariationSchema = z.object({
+    size: z.string().optional(),    // e.g., L, XL, XXL
+    color: z.string().optional(),   // e.g., Black, Red, Green
+    stock: z.number().min(0),       // must be >= 0
+    price: z.number().optional(),   // if not provided, use basePrice
 });
 
-export const updateTourZodSchema = z.object({
-    title: z.string().optional(),
-    description: z.string().optional(),
-    location: z.string().optional(),
-    costFrom: z.number().optional(),
-    startDate: z.string().optional().optional(),
-    endDate: z.string().optional().optional(),
-    tourType: z.string().optional(),// <- changed here
-    included: z.array(z.string()).optional(),
-    excluded: z.array(z.string()).optional(),
-    amenities: z.array(z.string()).optional(),
-    tourPlan: z.array(z.string()).optional(),
-    maxGuest: z.number().optional(),
-    minAge: z.number().optional(),
-    departureLocation: z.string().optional(),
-    arrivalLocation: z.string().optional(),
-    deleteImages: z.array(z.string()).optional()
-});
-
-export const createTourTypeZodSchema = z.object({
+// Create Product Validator
+export const createProductZodSchema = z.object({
     name: z.string(),
+    slug: z.string(), 
+    description: z.string().optional(),
+    images: z.array(z.string()).optional(),
+    deleteImages: z.array(z.string()).optional(),
+    basePrice: z.number(),
+    category: z.string().optional(),
+    variations: z.array(productVariationSchema).min(1, "At least one variation is required"),
 });
+
+// Update Product Validator
+export const updateProductZodSchema = z.object({
+    name: z.string().optional(),
+    description: z.string().optional(),
+    basePrice: z.number().optional(),
+    category: z.string().optional(),
+    variations: z.array(productVariationSchema).optional(),
+    deleteImages: z.array(z.string()).optional(), // if you need image handling
+});
+
+

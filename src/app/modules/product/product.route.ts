@@ -3,64 +3,38 @@ import { multerUpload } from "../../config/multer.config";
 import { checkAuth } from "../../middlewares/checkAuth";
 import { validateRequest } from "../../middlewares/validateRequest";
 import { Role } from "../user/user.interface";
-import { TourController } from "./product.controller";
+import { ProductController } from "./product.controller";
 import {
-    createTourTypeZodSchema,
-    createTourZodSchema,
-    updateTourZodSchema,
+    createProductZodSchema,
+    updateProductZodSchema
 } from "./product.validation";
 
 const router = express.Router();
-
-/* ------------------ TOUR TYPE ROUTES -------------------- */
-router.get("/tour-types", TourController.getAllTourTypes);
-
-router.post(
-    "/create-tour-type",
-    checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
-    validateRequest(createTourTypeZodSchema),
-    TourController.createTourType
-);
-
-router.get(
-    "/tour-types/:id",
-    TourController.getSingleTourType
-);
-router.patch(
-    "/tour-types/:id",
-    checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
-    validateRequest(createTourTypeZodSchema),
-    TourController.updateTourType
-);
-
-router.delete("/tour-types/:id", checkAuth(Role.ADMIN, Role.SUPER_ADMIN), TourController.deleteTourType);
-
-/* --------------------- TOUR ROUTES ---------------------- */
-router.get("/", TourController.getAllTours);
+router.get("/", ProductController.getAllProducts);
 
 router.post(
     "/create",
     checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
     multerUpload.array("files"),
-    validateRequest(createTourZodSchema),
-    TourController.createTour
+    validateRequest(createProductZodSchema),
+    ProductController.createProduct
 );
 
 router.get(
     "/:slug",
-    TourController.getSingleTour
+    ProductController.getSingleProduct
 );
 router.patch(
     "/:id",
     checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
     multerUpload.array("files"),
-    validateRequest(updateTourZodSchema),
-    TourController.updateTour
+    validateRequest(updateProductZodSchema),
+    ProductController.updateProduct
 );
 
-router.delete("/:id", checkAuth(Role.ADMIN, Role.SUPER_ADMIN), TourController.deleteTour);
+router.delete("/:id", checkAuth(Role.ADMIN, Role.SUPER_ADMIN), ProductController.deleteProduct);
 
 
 
 
-export const TourRoutes = router
+export const ProductRoutes = router
