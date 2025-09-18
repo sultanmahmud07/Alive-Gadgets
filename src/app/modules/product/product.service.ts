@@ -79,7 +79,18 @@ const updateProduct = async (id: string, payload: Partial<IProduct>) => {
     return updatedTour;
 };
 const deleteProduct = async (id: string) => {
-    return await Product.findByIdAndDelete(id);
+    const existingProduct = await Product.findById(id);
+    if (!existingProduct) {
+        throw new Error("Product not found.");
+    }
+
+    if (existingProduct.images && Array.isArray(existingProduct.images) && existingProduct.images.length) {
+        const imageUrls = existingProduct.images.map(file => file);
+        await Promise.all(imageUrls.map(url => deleteImageFromCLoudinary(url)))
+    }
+    await Product.findByIdAndDelete(id);
+    return null;
+
 };
 
 export const ProductService = {
